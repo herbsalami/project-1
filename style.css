@@ -1,9 +1,13 @@
 body {
+  padding-top: 5%;
   background: orange;
+  display: flex;
+  justify-content: center;
+
 }
 
 .flex-container {
-  margin: auto;
+/*  margin: auto;*/
   display: flex;
   height: 100%;
   width: 1000px;
