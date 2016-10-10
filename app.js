@@ -15,13 +15,13 @@ class Player {
     this.x = parseFloat($('.player').offset().left);
     this.y = parseFloat($('.player').offset().top);
     this.element = $('.player');
-    this.topLeft = [this.x, this.y];
-    this.topRight = [this.x + $('.player').width(), this.y];
-    this.bottomLeft = [this.x, this.y + $('.player').height()];
-    this.bottomRight = [this.x + $('.player').width(), this.y + $('.player').height()];
     this.angle = 0;
     this.center = [$(this.element).offset().left+$(this.element).width()/2, $(this.element).offset().top+$(this.element).height()/2];
-    this.hit = [0, 0];
+    this.hitCoordinates = [$(this.element).position().left + 25, $(this.element).position().top + 12.5];
+    this.hurtCoordinates = [
+      [$(this.element).position().left + 25, $(this.element).position().top + 37.5],
+      [$(this.element).position().left + 25, $(this.element).position().top + 62.5],
+      [$(this.element).position().left + 25, $(this.element).position().top + 87.5]];
     this.hitbox = [
       parseFloat(this.x) + parseFloat($('.player').width())/2,
       parseFloat(this.y) + parseFloat($('.player').height())/8
@@ -41,19 +41,13 @@ class Player {
       ]
     ]
   }
-  hitboxReset() {
-    this.hitbox = [
-      parseFloat(this.x) + parseFloat($('.player').width())/2,
-      parseFloat(this.y) + parseFloat($('.player').height())/8
-    ];
-  }
 }
 
 class Enemy {
   constructor(x, y) {
     this.alive = true;
     this.element = $("<div class='enemy'></div>");
-    $('.player').append(this.element);
+    $('#board').append(this.element);
     this.x = this.element.css('left');
     this.y = this.element.css('top');
     // this.element = $('<div class=enemy></div>');
@@ -83,16 +77,21 @@ class Enemy {
 
   moveEnemy() {
     var interval = Math.floor(Math.random()*enemyMove) + 50;
+    console.log("moveEnemy");
     setTimeout(function() {
       if(!time) {
         this.movement();
       }
-      if(Math.abs(parseFloat($player.hitbox[0]) - parseFloat(this.element.offset().left) + 25) < 25 &&  Math.abs(parseFloat($player.hitbox[1]) - parseFloat(this.element.offset().top) + 25) < 25) {
+      if(Math.abs(parseFloat($player.hitbox[0]) - parseFloat(this.element.offset().left) + 12.5) < 25 &&  Math.abs(parseFloat($player.hitbox[1]) - parseFloat(this.element.offset().top) + 12.5) < 25) {
         console.log('Hit!');
         // alert("hit!");
       }
       this.moveEnemy();
     }.bind(this),interval);
+  }
+
+  testCollision() {
+    this.element.center =
   }
 
 }
@@ -136,25 +135,11 @@ function setCollisions(center, hit, hurt) {
   // $player.hitbox = updateCoordinates(center, hit);
   // for (var i = 0; i < 3; i++) {
   //   $player.hurtboxes[i] = updateCoordinates(center, hurt[i]);
-    var newCoord = updateCoordinates($player.center, [$player.hitbox[0], $player.hitbox[1]]);
-    var hieee = [$player.hitbox[0], $player.hitbox[1]];
-    $player.hit[0] = newCoord[0];
-    $player.hit[1] = newCoord[1];
-    $player.hitboxReset();
-    var enemy = $("<div class='enemy'></div>");
-    var left = parseFloat($('.player').offset().left) + parseFloat($('.player').width());
-    var top = parseFloat($('.player').offset().top) + parseFloat($('.player').height());
-    $(enemy).css({
-     "position": "absolute",
-      // "left": $player.hit[0],
-      // "top": $player.hit[1]
-      "left" : newCoord[0] + "px",
-      "top" : newCoord[1] + "px"
-    });
-
-    $('.enemy').remove();
-    $('#board').append(enemy);
-
+    // var newCoord = updateCoordinates($player.center, [$player.hitbox[0], $player.hitbox[1]]);
+    $player.hitbox = updateCoordinates($player.center, [$player.hitCoordinates[0], $player.hitCoordinates[1]]);
+    for (var i = 0; i < $player.hurtCoordinates.length; i++) {
+      $player.hurtboxes[i] = updateCoordinates($player.center, [$player.hurtCoordinates[i][0], $player.hurtCoordinates[i][1]]);
+    }
 }
 
 function updateCoordinates(origin, point) {
@@ -172,8 +157,13 @@ function movePlayer () {
     $player.x = moveX;
     $player.y = moveY;
     $player.center = [$player.x + 25, $player.y + 50];;
-    $player.hit[0] = moveX;
-    $player.hit[1] = moveY;
+    $player.hitCoordinates[0] = moveX + 25;
+    $player.hitCoordinates[1] = moveY + 12.5;
+    for (var i = 0; i < $player.hurtCoordinates.length; i++) {
+      $player.hurtCoordinates[i][0] = moveX + 25;
+      $player.hurtCoordinates[i][1] = moveY + 37.5 + i * 25;
+    }
+    setCollisions($player.center, $player.hitCoordinates, $player.hurtCoordinates)
     var hieee = [$player.hitbox[0], $player.hitbox[1]];
 
     // moveCollisions();// setCollisions($player.center, $player.hitbox, $player.hurtboxes);
@@ -192,7 +182,7 @@ $(document).mousemove(function(e){
   $($player.element).css({ '-moz-transform': 'rotate(' + angle + 'deg)'});
   $($player.element).css({ 'transform': 'rotate(' + angle + 'deg)'});
   $player.angle = angle;
-  setCollisions($player.center, $player.hitbox, $player.hurtboxes);
+  setCollisions($player.center, $player.hitCoordinates, $player.hurtboxes);
 
 });
 
@@ -200,9 +190,9 @@ $(document).mousemove(function(e){
   var enemyMove = 500;
   var $board = new Board();
   var $player = new Player();
-  // for (var i = 1; i < 30; i++) {
-  //   var $enemy = new Enemy(i * 25, i * 25);
-  // }
+  for (var i = 1; i < 2; i++) {
+    var $enemy = new Enemy(i * 25, i * 25);
+  }
   var moveX = parseFloat($player.x);
   var moveY = parseFloat($player.y);
   checkMovement();
