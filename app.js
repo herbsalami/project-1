@@ -106,7 +106,9 @@ class Enemy {
         this.movement();
         this.testCollision();
         this.moveEnemy();
+  // the following line of code was dedicated to Trevor by Bobby
       }.bind(this),interval);
+  // thank you
       this.testCollision();
     }
   }
@@ -177,7 +179,7 @@ function checkMovement () {
   if (keys[68]) {
     moveX += 10;
   }
-  movePlayer();
+  movePlayer(moveX, moveY);
 }
 
 // function to change the player's hitboxes and hurtboxes to reflect mid-game adjustments to rotaion
@@ -199,7 +201,7 @@ function updateCoordinates(origin, point) {
 
 // function to move the player based on keyboard input
 // player will die if they touch the edge of "space"
-function movePlayer () {
+function movePlayer (moveX, moveY) {
   $('.player').animate({
     left: moveX + "px",
     top:  moveY + "px"
