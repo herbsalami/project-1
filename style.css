@@ -1,8 +1,9 @@
 body {
   padding-top: 5px;
-  background: orange;
+  background: gray;
   display: flex;
   justify-content: center;
+  font-family: 'Montserrat', sans-serif;
 
 }
 
@@ -12,24 +13,26 @@ body {
   height: 100%;
   width: 1000px;
   justify-content: space-between;
-  background: white;
+  background: black;
   align-items: center;
+  border-radius: 50px;
 }
 
 .hud {
   width: 200px;
   height: 100px;
   background: blue;
+  text-align: center;
 }
 
 .enemy {
-  position: relative;
+  position: absolute;
   width: 25px;
   height: 25px;
   background: red;
   top: 300px;
   left: 100px;
-  display: block;
+  display: inline-block;
   border-radius: 50%;
 }
 
@@ -38,18 +41,22 @@ body {
   height: 600px;
   background: black;
    background: url('space.jpg');
-  -webkit-animation: 50s scroll infinite linear;
+/*  -webkit-animation: 50s scroll infinite linear;
   -moz-animation: 50s scroll infinite linear;
   -o-animation: 50s scroll infinite linear;
   -ms-animation: 50s scroll infinite linear;
-  animation: 50s scroll infinite linear;
-  overflow: hidden;
+  animation: 50s scroll infinite linear;*/
+  border: 1px solid white;
+}
+
+#lose {
+  display: hidden;
 }
 
 .player {
   background-image: url('spear.png');
-  left: 100px;
-  top: 100px;
+  left: 500px;
+  top: 500px;
   position: absolute;
   width: 50px;
   height: 100px;
@@ -58,7 +65,7 @@ body {
   background-position: center;
 }
 
-@-webkit-keyframes scroll{
+/*@-webkit-keyframes scroll{
   100%{
     background-position:0px -3000px;
   }
@@ -86,7 +93,7 @@ body {
   100%{
     background-position:0px -3000px;
   }
-}
+}*/
 
 /*.overlay{
   position: fixed;
