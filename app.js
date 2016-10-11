@@ -100,7 +100,7 @@ class Enemy {
   // slightly randomize the movement interval and check for collisions
   moveEnemy() {
     if(this.alive){
-      var interval = Math.floor(Math.random()*500) + 50;
+      var interval = Math.floor(Math.random()*enemyMove) + 50;
       console.log("moveEnemy");
       setTimeout(function() {
         this.movement();
@@ -251,7 +251,7 @@ var game = true;
 function levelUp() {
   if(game){
     level++;
-    $('#hud-left > h2').text("level " + level);
+    $('#hud-left > h3').text("level " + level);
     setTimeout(function() {
       for (var i = 1; i <= level; i++) {
         var $enemy = new Enemy(i * 25, i * 25);
@@ -280,10 +280,29 @@ function lose() {
 // code to get form data
 var $data = window.location.search;
 $data = $data.substring(1);
-var $formData = {};{
-  var $pair = $data.split('=');
+$data = $data.split('&');
+var $formData = {};
+
+for (var i = 0; i < $data.length; i++) {
+  var $pair = $data[i].split('=');
   $formData[$pair[0]] = $pair[1];
 }
-var name = $formData[name];
+var difficulty = $formData["difficulty"]
+
+switch (difficulty) {
+  case "Relaxed" :
+    enemyMove = 750;
+    break;
+  case "Healthy" :
+    enemyMove = 500;
+    break;
+  case "Taxing" :
+    enemyMove = 250;
+    break;
+}
+
+$('#hud-left > h2').text(difficulty);
+
+var name = $formData["name"];
 levelUp();
 checkMovement();

@@ -17,8 +17,14 @@
   <img id="screen" src="screen.png">
   <form action="game.html" method="get">
   <label>Enter your name to play...</label>
-  <input type="text" name="name">
-  <input type="submit" value="Play">
+  <input type="text" name="name" id="text">
+  <label>Select Difficulty</label>
+  <select name="difficulty">
+            <option value="Relaxed">Relaxed</option>
+            <option value="Healthy" selected>Healthy</option>
+            <option value="Taxing">Taxing</option>
+  </select>
+  <input type="submit" value="Play" id="submit">
   </form>
 <footer><a href="https://github.com/herbsalami/project-1">Github</a></footer>
 </body>
